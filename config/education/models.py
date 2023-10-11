@@ -5,8 +5,8 @@ NULLABLE = {'blank': True, 'null': True}
 
 class Course(models.Model):
     title = models.CharField(max_length=100, **NULLABLE,
-                             verbose_name='фамилия')
-    description = models.TextField(**NULLABLE, verbose_name='имя')
+                             verbose_name='название')
+    description = models.TextField(**NULLABLE, verbose_name='описание')
     picture = models.ImageField(upload_to='new_app/', verbose_name='превью',
                                 **NULLABLE)
 
@@ -20,10 +20,10 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     title = models.CharField(max_length=100, **NULLABLE,
-                             verbose_name='фамилия')
+                             verbose_name='название')
     description = models.CharField(max_length=100, **NULLABLE,
-                                   verbose_name='имя')
-    picture = models.ImageField(upload_to='new_app/', **NULLABLE,
+                                   verbose_name='описание')
+    picture = models.ImageField(upload_to='education/', **NULLABLE,
                                 verbose_name='превью')
     link = models.URLField(max_length=200, **NULLABLE, verbose_name='ссылка')
 
