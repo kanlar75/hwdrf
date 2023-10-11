@@ -1,62 +1,62 @@
 [
   {
-    "model": "course.payment",
+    "model": "education.payment",
     "pk": 1,
     "fields": {
       "user": 2,
-      "payment_date": "2023-10-08T12:30:40.115Z",
+      "date_of_payment": "2023-10-08",
       "course": 1,
       "lesson": null,
-      "sum_of_payment": "18000.00",
+      "sum_of_payment": "18000",
       "payment_method": "CASH"
     }
   },
   {
-    "model": "course.payment",
+    "model": "education.payment",
     "pk": 2,
     "fields": {
       "user": 3,
-      "payment_date": "2023-10-09T11:20:00.613Z",
+      "date_of_payment": "2023-10-09",
       "course": 1,
       "lesson": null,
-      "sum_of_payment": "15700.00",
+      "sum_of_payment": "15700",
       "payment_method": "CARD"
     }
   },
   {
-    "model": "course.payment",
+    "model": "education.payment",
     "pk": 3,
     "fields": {
       "user": 1,
-      "payment_date": "2023-10-09T18:25:01.258Z",
+      "date_of_payment": "2023-10-09",
       "course": null,
       "lesson": 2,
-      "amount": "2500.00",
-      "way_of_payment": "CARD"
+      "sum_of_payment": "2500",
+      "payment_method": "CARD"
     }
   },
   {
-    "model": "course.payment",
+    "model": "education.payment",
     "pk": 4,
     "fields": {
       "user": 2,
-      "payment_date": "2023-10-10T08:23:35.750Z",
+      "date_of_payment": "2023-10-10",
       "course": null,
       "lesson": 2,
-      "amount": "2800.00",
-      "way_of_payment": "CASH"
+      "sum_of_payment": "2800",
+      "payment_method": "CASH"
     }
   },
   {
-    "model": "course.payment",
+    "model": "education.payment",
     "pk": 5,
     "fields": {
       "user": 3,
-      "payment_date": "2023-10-11T21:35:15.755Z",
+      "date_of_payment": "2023-10-11",
       "course": 3,
-      "paid_lesson": null,
-      "amount": "85000.00",
-      "way_of_payment": "CARD"
+      "lesson": null,
+      "sum_of_payment": "85000",
+      "payment_method": "CARD"
     }
   }
 ]
