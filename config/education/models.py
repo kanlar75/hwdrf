@@ -27,7 +27,7 @@ class Lesson(models.Model):
                                 verbose_name='превью')
     link = models.URLField(max_length=200, **NULLABLE, verbose_name='ссылка')
     course = models.ForeignKey('Course', on_delete=models.CASCADE,
-                               related_name='lesson', verbose_name='курс',
+                               related_name='course', verbose_name='курс',
                                **NULLABLE)
 
     def __str__(self):
