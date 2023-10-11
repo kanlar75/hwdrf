@@ -1,10 +1,10 @@
-from rest_framework import viewsets, generics
+from rest_framework.viewsets import ModelViewSet, generics
 
 from education.models import Course, Lesson
 from education.serializers import CourseSerializer, LessonSerializer
 
 
-class CourseViewSet(viewsets.ModelViewSet):
+class CourseViewSet(ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
 
