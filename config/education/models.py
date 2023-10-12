@@ -7,7 +7,7 @@ class Course(models.Model):
     title = models.CharField(max_length=100, **NULLABLE,
                              verbose_name='название')
     description = models.TextField(**NULLABLE, verbose_name='описание')
-    picture = models.ImageField(upload_to='new_app/', verbose_name='превью',
+    picture = models.ImageField(upload_to='courses/', verbose_name='превью',
                                 **NULLABLE)
 
     def __str__(self):
@@ -23,11 +23,11 @@ class Lesson(models.Model):
                              verbose_name='название')
     description = models.CharField(max_length=100, **NULLABLE,
                                    verbose_name='описание')
-    picture = models.ImageField(upload_to='education/', **NULLABLE,
+    picture = models.ImageField(upload_to='lessons/', **NULLABLE,
                                 verbose_name='превью')
     link = models.URLField(max_length=200, **NULLABLE, verbose_name='ссылка')
     course = models.ForeignKey('Course', on_delete=models.CASCADE,
-                               related_name='lesson', verbose_name='курс',
+                               related_name='course', verbose_name='курс',
                                **NULLABLE)
 
     def __str__(self):
@@ -50,9 +50,9 @@ class Payment(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE,
                              verbose_name='пользователь')
     date_of_payment = models.DateField(verbose_name='дата платежа')
-    course = models.ForeignKey('Course', on_delete=models.CASCADE,
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, **NULLABLE,
                                verbose_name='оплаченный курс')
-    lesson = models.ForeignKey('Lesson', on_delete=models.CASCADE,
+    lesson = models.ForeignKey('Lesson', on_delete=models.CASCADE, **NULLABLE,
                                verbose_name='оплаченный урок')
     sum_of_payment = models.IntegerField(verbose_name='сумма платежа')
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES,
