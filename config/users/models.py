@@ -4,13 +4,21 @@ from django.db import models
 NULLABLE = {'blank': True, 'null': True}
 
 
+class UserRoles(models.TextChoices):
+    MEMBER = 'member', 'Пользователь'
+    MODERATOR = 'moderator', 'Модератор'
+
+
 class User(AbstractUser):
-    username = None
+
+    username = models.CharField(max_length=255, **NULLABLE, verbose_name='username')
 
     email = models.EmailField(unique=True, verbose_name='Email')
     phone = models.CharField(max_length=35, **NULLABLE, verbose_name='номер телефона')
     town = models.CharField(max_length=150, **NULLABLE, verbose_name='город')
     avatar = models.ImageField(upload_to='users/', **NULLABLE, verbose_name='аватар')
+    role = models.CharField(max_length=9, choices=UserRoles.choices,
+                            default='member')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

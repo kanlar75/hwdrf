@@ -1,7 +1,8 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path
-from .apps import EducationConfig
-from .views import CourseViewSet, LessonCreateAPIView, LessonListAPIView, \
+
+from education.apps import EducationConfig
+from education.views import CourseViewSet, LessonCreateAPIView, LessonListAPIView, \
     LessonRetriveAPIView, LessonUpdateAPIView, LessonDestroyAPIView, \
     PaymentListAPIView
 
