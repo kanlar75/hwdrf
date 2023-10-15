@@ -1,8 +1,7 @@
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import OrderingFilter
-from rest_framework import generics, status
-from rest_framework.response import Response
+from rest_framework import generics
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -14,46 +13,42 @@ from users.models import UserRoles
 
 
 class CourseViewSet(ModelViewSet):
-    default_serializer = CourseSerializer
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
-    serializer_class = CourseSerializer
-    serializer_classes = {
-        "retrieve": CourseDetailSerializer
+    default_serializer = CourseSerializer
+    serializers = {
+        'list': CourseSerializer,
+        'retrieve': CourseDetailSerializer,
     }
 
-    serializer_classes = {
-        "retrieve": CourseDetailSerializer
-    }
+    def get_serializer_class(self):
+        return self.serializers.get(self.action,
+                                    self.default_serializer)
 
     def get_queryset(self):
-        if self.request.user.is_superuser or self.request.user.is_staff or self.request.user.role == UserRoles.MODERATOR:
+        if (self.request.user.is_superuser or self.request.user.is_staff
+                or self.request.user.role == UserRoles.MODERATOR):
             return Course.objects.all()
 
         return Course.objects.filter(owner=self.request.user)
 
-    def get_serializer_class(self):
-        return self.serializer_classes.get(self.action,
-                                           self.default_serializer)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def perform_create(self, serializer):
         new_course = serializer.save()
         new_course.owner = self.request.user
         new_course.save()
-        return_serializer = CourseSerializer(new_course)
-        headers = self.get_success_headers(return_serializer.data)
-        return Response(
-            return_serializer.data, status=status.HTTP_201_CREATED,
-            headers=headers
-        )
+
+    def get_permissions(self):
+        if self.request.method in ['CREATE', 'DELETE']:
+            self.permission_classes = [IsOwner, ~IsModerator]
+        else:
+            self.permission_classes = [IsOwner, ]
+        return super(CourseViewSet, self).get_permissions()
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ~IsModerator]
 
     def perform_create(self, serializer):
         new_lesson = serializer.save()
@@ -64,10 +59,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-
-    serializer_classes = {
-        "retrieve": CourseDetailSerializer
-    }
+    permission_classes = [IsAuthenticated]
 
 
 class LessonRetriveAPIView(generics.RetrieveAPIView):
@@ -89,6 +81,7 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
 
 class PaymentListAPIView(generics.ListAPIView):
     serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated]
     queryset = Payment.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ('course', 'lesson', 'payment_method')
