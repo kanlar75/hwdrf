@@ -35,9 +35,15 @@ class EducationTestCase(APITestCase):
             owner=self.user
         )
 
+    def test_lesson_retrieve(self):
+        """Test retrieve a lesson"""
 
+        response = self.client.get(
+            reverse('education:lesson_detail',
+                    args=[self.lesson.pk])
+        )
 
-
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_getting_lesson_list(self):
         """ Тест получения списка уроков """
@@ -136,8 +142,9 @@ class EducationTestCase(APITestCase):
     def test_lesson_delete(self):
         """ Тест удаления урока """
 
-        self.client.delete(
+        response = self.client.delete(
             reverse('education:lesson_delete', args=[self.lesson.pk])
         )
 
         self.assertFalse(Lesson.objects.filter(id=self.lesson.pk).exists())
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
