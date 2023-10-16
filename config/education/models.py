@@ -44,6 +44,7 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'урок'
         verbose_name_plural = 'уроки'
+        ordering = ['-id']
 
 
 class Payment(models.Model):

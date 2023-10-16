@@ -6,6 +6,7 @@ from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Course, Lesson, Payment
+from .paginators import MyPaginator
 from .permissions import IsOwner, IsModerator
 from .serializers import CourseSerializer, LessonSerializer, \
     CourseDetailSerializer, PaymentSerializer
@@ -16,6 +17,7 @@ class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
     default_serializer = CourseSerializer
+    pagination_class = MyPaginator
     serializers = {
         'list': CourseSerializer,
         'retrieve': CourseDetailSerializer,
@@ -59,6 +61,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    pagination_class = MyPaginator
     permission_classes = [IsAuthenticated]
 
 
