@@ -32,7 +32,7 @@ class Lesson(models.Model):
                                 verbose_name='превью')
     link = models.URLField(max_length=200, **NULLABLE, verbose_name='ссылка')
     course = models.ForeignKey('Course', on_delete=models.CASCADE,
-                               related_name='course', verbose_name='курс',
+                               related_name='lessons', verbose_name='курс',
                                **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
                               on_delete=models.CASCADE, **NULLABLE,
@@ -77,9 +77,11 @@ class Payment(models.Model):
 
 class Subscription(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE,
+                               related_name='subscriptions',
                                verbose_name='курс')
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE, related_name='subs',
+                             on_delete=models.CASCADE,
+                             related_name='subscriptions',
                              verbose_name='пользователь')
     is_active = models.BooleanField(default=False, verbose_name='активна')
 

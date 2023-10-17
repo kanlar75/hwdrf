@@ -8,24 +8,16 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Course, Lesson, Payment, Subscription
 from .paginators import MyPaginator
 from .permissions import IsOwner, IsModerator
-from .serializers import CourseSerializer, LessonSerializer, PaymentSerializer, \
-    SubscriptionSerializer, CourseDetailSerializer
+from .serializers import (CourseSerializer, LessonSerializer,
+                          PaymentSerializer, SubscriptionSerializer)
 from users.models import UserRoles
 
 
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
-    default_serializer = CourseSerializer
-    # pagination_class = MyPaginator
-    serializers = {
-        'list': CourseSerializer,
-        'retrieve': CourseDetailSerializer,
-    }
-
-    def get_serializer_class(self):
-        return self.serializers.get(self.action,
-                                    self.default_serializer)
+    serializer_class = CourseSerializer
+    pagination_class = MyPaginator
 
     def get_queryset(self):
         if (self.request.user.is_superuser or self.request.user.is_staff

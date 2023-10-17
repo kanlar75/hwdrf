@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from education.models import Lesson, Course
+from education.models import Lesson, Course, Subscription
 from users.models import User, UserRoles
 
 
@@ -65,13 +65,13 @@ class EducationTestCase(APITestCase):
                 "previous": None,
                 "results": [
                     {
-                        "id": 3,
+                        "id": 5,
                         "title": 'test title lesson',
                         "description": 'test description lesson',
                         "picture": None,
                         "link": None,
-                        "course": 2,
-                        "owner": 2
+                        "course": 4,
+                        "owner": 4
 
                     }
                 ]
@@ -88,7 +88,8 @@ class EducationTestCase(APITestCase):
 
         }
 
-        response = self.client.post(reverse('education:lesson_create'), data=data)
+        response = self.client.post(reverse('education:lesson_create'),
+                                    data=data)
 
         self.assertEqual(
             response.status_code,
@@ -98,15 +99,15 @@ class EducationTestCase(APITestCase):
         self.assertEqual(
             response.json(),
             {
-                    "id": 2,
-                    "title": 'test create lesson',
-                    "description": 'test create description lesson',
-                    "picture": None,
-                    "link": None,
-                    "course": 1,
-                    "owner": 1
+                "id": 2,
+                "title": 'test create lesson',
+                "description": 'test create description lesson',
+                "picture": None,
+                "link": None,
+                "course": 1,
+                "owner": 1
 
-                    }
+            }
 
         )
 
@@ -148,3 +149,35 @@ class EducationTestCase(APITestCase):
 
         self.assertFalse(Lesson.objects.filter(id=self.lesson.pk).exists())
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_create_subscription(self):
+        """ Тест создания подписки """
+
+        data = {
+            "user": self.user.pk,
+            "course": self.course.pk
+        }
+        response = self.client.post(
+            reverse('education:subscription_create'),
+            data=data
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
+        )
+
+    def test_delete_subscription(self):
+        """ Тест удаления подписки """
+
+        self.client.delete(
+            reverse('education:subscription_delete', args=[self.course.id])
+        )
+
+        self.assertFalse(
+            Subscription.objects.filter(id=self.course.id).exists())
+
+    def tearDown(self):
+        Course.objects.all().delete()
+        User.objects.all().delete()
+        return super().tearDown()

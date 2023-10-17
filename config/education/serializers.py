@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.fields import SerializerMethodField
 
 from education.models import Course, Lesson, Payment, Subscription
 from education.validators import LinkValidator
@@ -19,27 +18,11 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    lesson_count = SerializerMethodField()
-    is_subscribed = SubscriptionSerializer(source='subs', many=True,
-                                           read_only=True)
-
-    def get_lesson_count(self, instance):
-        if instance.course.all():
-            return instance.course.all().count()
-        else:
-            return 0
-
-    class Meta:
-        model = Course
-        fields = '__all__'
-
-
-class CourseDetailSerializer(serializers.ModelSerializer):
-    course_lessons = SerializerMethodField()
-
-    def get_course_lessons(self, instance):
-        return [lesson.title for lesson in
-                Lesson.objects.filter(course=instance)]
+    count_lessons = serializers.SerializerMethodField()
+    lesson = LessonSerializer(source='lessons', many=True, read_only=True)
+    subscribed_users = SubscriptionSerializer(source='subscriptions',
+                                              many=True,
+                                              read_only=True)
 
     class Meta:
         model = Course
@@ -50,6 +33,3 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = '__all__'
-
-
-
