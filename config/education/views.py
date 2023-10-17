@@ -5,25 +5,19 @@ from rest_framework import generics
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Course, Lesson, Payment
+from .models import Course, Lesson, Payment, Subscription
+from .paginators import MyPaginator
 from .permissions import IsOwner, IsModerator
-from .serializers import CourseSerializer, LessonSerializer, \
-    CourseDetailSerializer, PaymentSerializer
+from .serializers import (CourseSerializer, LessonSerializer,
+                          PaymentSerializer, SubscriptionSerializer)
 from users.models import UserRoles
 
 
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
-    default_serializer = CourseSerializer
-    serializers = {
-        'list': CourseSerializer,
-        'retrieve': CourseDetailSerializer,
-    }
-
-    def get_serializer_class(self):
-        return self.serializers.get(self.action,
-                                    self.default_serializer)
+    serializer_class = CourseSerializer
+    pagination_class = MyPaginator
 
     def get_queryset(self):
         if (self.request.user.is_superuser or self.request.user.is_staff
@@ -45,6 +39,23 @@ class CourseViewSet(ModelViewSet):
         return super(CourseViewSet, self).get_permissions()
 
 
+class SubscriptionListAPIView(generics.ListAPIView):
+    serializer_class = SubscriptionSerializer
+    queryset = Subscription.objects.all()
+    permission_classes = [IsAuthenticated]
+
+
+class SubscriptionCreateAPIView(generics.CreateAPIView):
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class SubscriptionDestroyAPIView(generics.DestroyAPIView):
+    serializer_class = SubscriptionSerializer
+    queryset = Subscription.objects.all()
+    permission_classes = [IsAuthenticated]
+
+
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
@@ -59,6 +70,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    pagination_class = MyPaginator
     permission_classes = [IsAuthenticated]
 
 
