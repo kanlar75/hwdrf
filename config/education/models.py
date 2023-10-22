@@ -14,6 +14,7 @@ class Course(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
                               on_delete=models.CASCADE, **NULLABLE,
                               verbose_name='добавил курс')
+    price = models.IntegerField(verbose_name='цена')
 
     def __str__(self):
         return f'{self.title}'
@@ -37,6 +38,7 @@ class Lesson(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
                               on_delete=models.CASCADE, **NULLABLE,
                               verbose_name='добавил урок')
+    price = models.IntegerField(verbose_name='цена')
 
     def __str__(self):
         return f'{self.title}'
@@ -63,12 +65,13 @@ class Payment(models.Model):
                                verbose_name='оплаченный курс')
     lesson = models.ForeignKey('Lesson', on_delete=models.CASCADE, **NULLABLE,
                                verbose_name='оплаченный урок')
-    sum_of_payment = models.IntegerField(verbose_name='сумма платежа')
+    amount = models.IntegerField(verbose_name='сумма платежа')
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES,
-                                      verbose_name='способ оплаты')
+                                      default='CARD', verbose_name='способ '
+                                                                   'оплаты')
 
     def __str__(self):
-        return f'{self.date_of_payment} - {self.sum_of_payment}'
+        return f'{self.date_of_payment} - {self.amount}'
 
     class Meta:
         verbose_name = 'платёж'
