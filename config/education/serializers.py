@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
 from education.models import Course, Lesson, Payment, Subscription
-from education.services.create_pay import create_session
+from education.services.create_pay import get_payment_link
 from education.validators import LinkValidator
 
 
@@ -32,10 +32,12 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    payment_url = SerializerMethodField()
+
     def get_payment_url(self, payment):
-        return create_session(payment)
+
+        return get_payment_link(payment)
 
     class Meta:
         model = Payment
         fields = '__all__'
-

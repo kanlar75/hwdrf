@@ -67,7 +67,8 @@ class Payment(models.Model):
                                verbose_name='оплаченный урок')
     amount = models.IntegerField(verbose_name='сумма платежа')
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES,
-                                      verbose_name='способ оплаты')
+                                      default='CARD', verbose_name='способ '
+                                                                   'оплаты')
 
     def __str__(self):
         return f'{self.date_of_payment} - {self.sum_of_payment}'
