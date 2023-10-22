@@ -20,11 +20,13 @@ class CourseViewSet(ModelViewSet):
     pagination_class = MyPaginator
 
     def get_queryset(self):
-        if (self.request.user.is_superuser or self.request.user.is_staff
-                or self.request.user.role == UserRoles.MODERATOR):
-            return Course.objects.all()
+        if self.request.user.is_authenticated:
+            if (self.request.user.is_superuser or self.request.user.is_staff
+                    or self.request.user.role == UserRoles.MODERATOR):
+                return Course.objects.all()
 
-        return Course.objects.filter(owner=self.request.user)
+            return Course.objects.filter(owner=self.request.user)
+        return []
 
     def perform_create(self, serializer):
         new_course = serializer.save()
@@ -98,3 +100,13 @@ class PaymentListAPIView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ('course', 'lesson', 'payment_method')
     ordering_fields = ('date_of_payment',)
+
+
+class PaymentCreateAPIView(generics.CreateAPIView):
+    serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        new_payment = serializer.save()
+        new_payment.user = self.request.user
+        new_payment.save()
