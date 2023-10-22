@@ -71,7 +71,7 @@ class Payment(models.Model):
                                                                    'оплаты')
 
     def __str__(self):
-        return f'{self.date_of_payment} - {self.sum_of_payment}'
+        return f'{self.date_of_payment} - {self.amount}'
 
     class Meta:
         verbose_name = 'платёж'
