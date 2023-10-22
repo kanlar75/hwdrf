@@ -6,21 +6,28 @@ stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 
 
 def create_session(payment):
-    product = stripe.Product.create(name="Gold Special")
-    price = stripe.Price.create(
-        unit_amount=int(f"{str(payment.amount)}"+"00"),
-        currency="usd",
-        product=product["id"],
+
+    if payment.course:
+        title = payment.course.title
+        description = payment.course.description
+    else:
+        title = payment.lesson.title
+        description = payment.lesson.description
+
+    product = stripe.Product.create(
+        name=title,
+        description=description,
     )
 
     payment = stripe.checkout.Session.create(
         success_url='https://example.com/success',
         line_items=[
             {
-                "price": price["id"],
+                "price": product["id"],
                 "quantity": 1,
             },
         ],
         mode="payment",
     )
+
     return payment['url']
