@@ -33,12 +33,11 @@ class Lesson(models.Model):
                                 verbose_name='превью')
     link = models.URLField(max_length=200, **NULLABLE, verbose_name='ссылка')
     course = models.ForeignKey('Course', on_delete=models.CASCADE,
-                               related_name='lessons', verbose_name='курс',
-                               **NULLABLE)
+                               related_name='lessons', verbose_name='курс')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
                               on_delete=models.CASCADE, **NULLABLE,
                               verbose_name='добавил урок')
-    price = models.IntegerField(verbose_name='цена')
+    price = models.IntegerField(verbose_name='цена', **NULLABLE)
 
     def __str__(self):
         return f'{self.title}'

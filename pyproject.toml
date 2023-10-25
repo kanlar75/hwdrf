@@ -18,6 +18,10 @@ flake8 = "^6.1.0"
 coverage = "^7.3.2"
 drf-yasg = "^1.21.7"
 stripe = "^7.0.0"
+eventlet = "^0.33.3"
+celery = "^5.3.4"
+redis = "^5.0.1"
+django-celery-beat = "^2.5.0"
 
 
 [build-system]
