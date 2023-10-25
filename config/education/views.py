@@ -11,6 +11,7 @@ from .permissions import IsOwner, IsModerator
 from .serializers import (CourseSerializer, LessonSerializer,
                           PaymentSerializer, SubscriptionSerializer)
 from users.models import UserRoles
+from education.tasks import send_mail_for_update
 
 
 class CourseViewSet(ModelViewSet):
@@ -38,6 +39,13 @@ class CourseViewSet(ModelViewSet):
         new_course = serializer.save()
         new_course.owner = self.request.user
         new_course.save()
+
+    def perform_update(self, serializer):
+        """ Обновление курса """
+
+        updated_course = serializer.save()
+        updated_course.owner = self.request.user
+        updated_course.save()
 
     def get_permissions(self):
         """ Получаем разрешения """
@@ -80,10 +88,14 @@ class LessonCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, ~IsModerator]
 
     def perform_create(self, serializer):
-        """ Сохраняем пользователя, добавившего урок """
+        """ Сохраняем пользователя, добавившего урок, отправляем email
+        подписчикам """
 
         new_lesson = serializer.save()
         new_lesson.owner = self.request.user
+        subscribers = Subscription.objects.filter(course=new_lesson.course)
+        user_emails = [subscriber.user.email for subscriber in subscribers]
+        send_mail_for_update.delay(new_lesson.course.title, user_emails)
         new_lesson.save()
 
 
